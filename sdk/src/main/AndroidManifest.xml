@@ -1,2 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.jinrishici.sdk.android" />
+	package="com.jinrishici.sdk.android">
+
+	<uses-permission android:name="android.permission.INTERNET" />
+</manifest>
