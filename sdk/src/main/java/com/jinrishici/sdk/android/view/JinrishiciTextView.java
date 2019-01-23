@@ -2,10 +2,10 @@ package com.jinrishici.sdk.android.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.jinrishici.sdk.android.JinrishiciClient;
@@ -16,6 +16,7 @@ import com.jinrishici.sdk.android.model.JinrishiciRuntimeException;
 import com.jinrishici.sdk.android.model.PoetySentence;
 
 public class JinrishiciTextView extends AppCompatTextView {
+	private static final String TAG = "JinrishiciTextView";
 	private JinrishiciTextViewConfig config = new JinrishiciTextViewConfig();
 	private DataFormatListener dataFormatListener = null;//格式化方法
 	private PoetySentence nowPoetySentence = null;//现在正在展示的诗词数据的对象
@@ -46,10 +47,14 @@ public class JinrishiciTextView extends AppCompatTextView {
 
 	private void initAttrs(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
 		TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.JinrishiciTextView, defStyleAttr, 0);
-		config.isRefreshWhenClick = typedArray.getBoolean(R.styleable.JinrishiciTextView_jrsc_refresh_on_click, config.isRefreshWhenClick);
-		config.isShowErrorOnTextView = typedArray.getBoolean(R.styleable.JinrishiciTextView_jrsc_show_error, config.isShowErrorOnTextView);
-		config.loadingText = typedArray.getString(R.styleable.JinrishiciTextView_jrsc_text_loading);
-		config.customErrorText = typedArray.getString(R.styleable.JinrishiciTextView_jrsc_text_error);
+		if (typedArray.hasValue(R.styleable.JinrishiciTextView_jrsc_refresh_on_click))
+			config.isRefreshWhenClick = typedArray.getBoolean(R.styleable.JinrishiciTextView_jrsc_refresh_on_click, config.isRefreshWhenClick);
+		if (typedArray.hasValue(R.styleable.JinrishiciTextView_jrsc_show_error))
+			config.isShowErrorOnTextView = typedArray.getBoolean(R.styleable.JinrishiciTextView_jrsc_show_error, config.isShowErrorOnTextView);
+		if (typedArray.hasValue(R.styleable.JinrishiciTextView_jrsc_text_loading))
+			config.loadingText = typedArray.getString(R.styleable.JinrishiciTextView_jrsc_text_loading);
+		if (typedArray.hasValue(R.styleable.JinrishiciTextView_jrsc_text_error))
+			config.customErrorText = typedArray.getString(R.styleable.JinrishiciTextView_jrsc_text_error);
 		typedArray.recycle();
 	}
 
