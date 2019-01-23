@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.jinrishici.sdk.android.JinrishiciClient;
@@ -16,7 +15,6 @@ import com.jinrishici.sdk.android.model.JinrishiciRuntimeException;
 import com.jinrishici.sdk.android.model.PoetySentence;
 
 public class JinrishiciTextView extends AppCompatTextView {
-	private static final String TAG = "JinrishiciTextView";
 	private JinrishiciTextViewConfig config = new JinrishiciTextViewConfig();
 	private DataFormatListener dataFormatListener = null;//格式化方法
 	private PoetySentence nowPoetySentence = null;//现在正在展示的诗词数据的对象
@@ -35,14 +33,7 @@ public class JinrishiciTextView extends AppCompatTextView {
 		if (!JinrishiciFactory.isInit())
 			JinrishiciFactory.init(context);
 		request();
-		if (config.isRefreshWhenClick) {
-			setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					request();
-				}
-			});
-		}
+
 	}
 
 	private void initAttrs(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -56,10 +47,24 @@ public class JinrishiciTextView extends AppCompatTextView {
 		if (typedArray.hasValue(R.styleable.JinrishiciTextView_jrsc_text_error))
 			config.customErrorText = typedArray.getString(R.styleable.JinrishiciTextView_jrsc_text_error);
 		typedArray.recycle();
+		initConfig();
+	}
+
+	private void initConfig() {
+		if (config.isRefreshWhenClick)
+			setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					request();
+				}
+			});
+		else
+			setOnClickListener(null);
 	}
 
 	public void setConfig(JinrishiciTextViewConfig config) {
 		this.config.copy(config);
+		initConfig();
 	}
 
 	/**
