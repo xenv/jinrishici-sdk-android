@@ -42,6 +42,8 @@ public class JinrishiciTextView extends AppCompatTextView {
 			config.isRefreshWhenClick = typedArray.getBoolean(R.styleable.JinrishiciTextView_jrsc_refresh_on_click, config.isRefreshWhenClick);
 		if (typedArray.hasValue(R.styleable.JinrishiciTextView_jrsc_show_error))
 			config.isShowErrorOnTextView = typedArray.getBoolean(R.styleable.JinrishiciTextView_jrsc_show_error, config.isShowErrorOnTextView);
+		if (typedArray.hasValue(R.styleable.JinrishiciTextView_jrsc_show_loading_text))
+			config.isShowLoadingText = typedArray.getBoolean(R.styleable.JinrishiciTextView_jrsc_show_loading_text, config.isShowLoadingText);
 		if (typedArray.hasValue(R.styleable.JinrishiciTextView_jrsc_text_loading))
 			config.loadingText = typedArray.getString(R.styleable.JinrishiciTextView_jrsc_text_loading);
 		if (typedArray.hasValue(R.styleable.JinrishiciTextView_jrsc_text_error))
@@ -72,6 +74,8 @@ public class JinrishiciTextView extends AppCompatTextView {
 	 * 异步方法，请求成功后将诗词数据显示到TextView上
 	 */
 	private void request() {
+		if (config.isShowLoadingText)
+			setText(config.loadingText);
 		new JinrishiciClient().getOneSentenceBackground(new JinrishiciCallback() {
 			@Override
 			public void done(PoetySentence poetySentence) {

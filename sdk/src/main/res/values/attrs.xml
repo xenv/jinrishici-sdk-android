@@ -3,6 +3,7 @@
 	<declare-styleable name="JinrishiciTextView">
 		<attr name="jrsc_refresh_on_click" format="boolean" />
 		<attr name="jrsc_show_error" format="boolean" />
+		<attr name="jrsc_show_loading_text" format="boolean" />
 		<attr name="jrsc_text_loading" format="string" />
 		<attr name="jrsc_text_error" format="string" />
 	</declare-styleable>
