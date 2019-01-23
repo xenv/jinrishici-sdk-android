@@ -31,7 +31,8 @@ public class JinrishiciClient {
 	@Nullable
 	public PoetySentence getOneSentence(OkHttpClient.Builder builder) throws JinrishiciRuntimeException {
 		try {
-			RetrofitFactory.getInstance().setClient(builder);
+			if (builder != null)
+				RetrofitFactory.getInstance().setClient(builder);
 			if (TokenUtil.getInstance().getToken() == null)
 				generateToken();
 			if (TokenUtil.getInstance().getToken() == null)
@@ -57,8 +58,16 @@ public class JinrishiciClient {
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
-			if (msg.what == ExceptionFactory.Code.DONE) {
-				listener.done((PoetySentence) msg.obj);
+			switch (msg.what) {
+				case ExceptionFactory.Code.DONE:
+					listener.done((PoetySentence) msg.obj);
+					break;
+				case ExceptionFactory.Code.ERROR:
+					if (msg.obj instanceof JinrishiciRuntimeException)
+						listener.error((JinrishiciRuntimeException) msg.obj);
+					else
+						listener.error(new JinrishiciRuntimeException((Throwable) msg.obj));
+					break;
 			}
 		}
 	}
@@ -75,11 +84,18 @@ public class JinrishiciClient {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					PoetySentence sentence = getOneSentence(builder);
-					Message message = Message.obtain();
-					message.obj = sentence;
-					message.what = ExceptionFactory.Code.DONE;
-					handler.sendMessage(message);
+					try {
+						PoetySentence sentence = getOneSentence(builder);
+						Message message = Message.obtain();
+						message.obj = sentence;
+						message.what = ExceptionFactory.Code.DONE;
+						handler.sendMessage(message);
+					} catch (Exception e) {
+						Message message = Message.obtain();
+						message.obj = e;
+						message.what = ExceptionFactory.Code.ERROR;
+						handler.sendMessage(message);
+					}
 				}
 			}).start();
 		} catch (Exception e) {

@@ -22,4 +22,12 @@ public class JinrishiciRuntimeException extends RuntimeException {
 	public String getMessage() {
 		return message;
 	}
+
+	@Override
+	public String toString() {
+		return "JinrishiciRuntimeException{" +
+				"code=" + code +
+				", message='" + message + '\'' +
+				'}';
+	}
 }
