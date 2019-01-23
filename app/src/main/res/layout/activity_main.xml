@@ -11,13 +11,13 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="Loading..."
-		app:layout_constraintBottom_toTopOf="@id/jinrisici"
+		app:layout_constraintBottom_toTopOf="@id/jinrisiciTextView"
 		app:layout_constraintLeft_toLeftOf="parent"
 		app:layout_constraintRight_toRightOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
 
 	<com.jinrishici.sdk.android.view.JinrishiciTextView
-		android:id="@+id/jinrisici"
+		android:id="@+id/jinrisiciTextView"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:textColor="@color/colorAccent"
