@@ -11,9 +11,24 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="Loading..."
-		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintBottom_toTopOf="@id/jinrisici"
 		app:layout_constraintLeft_toLeftOf="parent"
 		app:layout_constraintRight_toRightOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
+
+	<com.jinrishici.sdk.android.view.JinrishiciTextView
+		android:id="@+id/jinrisici"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textColor="@color/colorAccent"
+		android:textSize="18sp"
+		app:jrsc_refresh_on_click="true"
+		app:jrsc_show_error="false"
+		app:jrsc_text_error="@string/app_name"
+		app:jrsc_text_loading="@string/app_name"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintLeft_toLeftOf="parent"
+		app:layout_constraintRight_toRightOf="parent"
+		app:layout_constraintTop_toBottomOf="@id/textView" />
 
 </android.support.constraint.ConstraintLayout>
