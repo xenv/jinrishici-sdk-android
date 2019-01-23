@@ -5,11 +5,12 @@ import com.jinrishici.sdk.android.model.PoetyToken;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 public interface JinrishiciAPI {
 	@GET("/token")
-	public Call<PoetyToken> getToken();
+	Call<PoetyToken> getToken();
 
 	@GET("/one.json")
-	public Call<PoetySentence> getSentence();
+	Call<PoetySentence> getSentence(@Query("client") String client);
 }
