@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<declare-styleable name="JinrishiciTextView">
+		<attr name="jrsc_refresh_on_click" format="boolean" />
+		<attr name="jrsc_show_error" format="boolean" />
+		<attr name="jrsc_text_loading" format="string" />
+		<attr name="jrsc_text_error" format="string" />
+	</declare-styleable>
+</resources>
