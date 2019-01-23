@@ -37,6 +37,8 @@ public class ExceptionFactory {
 		private static final int INLINE_ERROR = -2;
 		@DeclareMessage(message = "错误码未定义")
 		private static final int UNDEFINED_CODE = -1;
+		@DeclareMessage(message = "请求成功")
+		public static final int DONE = 0;
 		@DeclareMessage(message = "未知错误")
 		public static final int ERROR = 1;
 		@DeclareMessage(message = "未初始化，请先调用init方法进行初始化")

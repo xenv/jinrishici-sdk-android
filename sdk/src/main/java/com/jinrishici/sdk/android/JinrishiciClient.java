@@ -1,11 +1,15 @@
 package com.jinrishici.sdk.android;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.jinrishici.sdk.android.api.JinrishiciAPI;
 import com.jinrishici.sdk.android.factory.ExceptionFactory;
 import com.jinrishici.sdk.android.factory.RetrofitFactory;
+import com.jinrishici.sdk.android.listener.JinrishiciCallback;
 import com.jinrishici.sdk.android.model.JinrishiciRuntimeException;
 import com.jinrishici.sdk.android.model.PoetySentence;
 import com.jinrishici.sdk.android.model.PoetyToken;
@@ -17,14 +21,71 @@ import okhttp3.OkHttpClient;
 import retrofit2.Response;
 
 public class JinrishiciClient {
+	private static final String TAG = "Jinrishici";
+
 	@Nullable
-	public PoetySentence getOneSentence(OkHttpClient client) {
-		RetrofitFactory.getInstance().setClient(client);
-		if (TokenUtil.getInstance().getToken() == null)
-			generateToken();
-		if (TokenUtil.getInstance().getToken() == null)
-			throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_TOKEN_EMPTY);
-		return getSentence();
+	public PoetySentence getOneSentence() throws JinrishiciRuntimeException {
+		return getOneSentence(null);
+	}
+
+	@Nullable
+	public PoetySentence getOneSentence(OkHttpClient.Builder builder) throws JinrishiciRuntimeException {
+		try {
+			RetrofitFactory.getInstance().setClient(builder);
+			if (TokenUtil.getInstance().getToken() == null)
+				generateToken();
+			if (TokenUtil.getInstance().getToken() == null)
+				throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_TOKEN_EMPTY);
+			return getSentence();
+		} catch (Exception e) {
+			if (e instanceof JinrishiciRuntimeException)
+				throw e;
+			else {
+				Log.w(TAG, "getOneSentence: ", e);
+				throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR);
+			}
+		}
+	}
+
+	private static class JinrishiciHandler extends Handler {
+		private JinrishiciCallback listener;
+
+		JinrishiciHandler(JinrishiciCallback listener) {
+			this.listener = listener;
+		}
+
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			if (msg.what == ExceptionFactory.Code.DONE) {
+				listener.done((PoetySentence) msg.obj);
+			}
+		}
+	}
+
+	private JinrishiciHandler handler;
+
+	public void getOneSentenceBackground(JinrishiciCallback listener) {
+		getOneSentenceBackground(null, listener);
+	}
+
+	public void getOneSentenceBackground(final OkHttpClient.Builder builder, JinrishiciCallback listener) {
+		try {
+			handler = new JinrishiciHandler(listener);
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					PoetySentence sentence = getOneSentence(builder);
+					Message message = Message.obtain();
+					message.obj = sentence;
+					message.what = ExceptionFactory.Code.DONE;
+					handler.sendMessage(message);
+				}
+			}).start();
+		} catch (Exception e) {
+			Log.w(TAG, "getOneSentence: ", e);
+			listener.error(ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR));
+		}
 	}
 
 	private void generateToken() {

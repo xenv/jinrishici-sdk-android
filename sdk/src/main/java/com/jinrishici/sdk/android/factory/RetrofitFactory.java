@@ -1,6 +1,7 @@
 package com.jinrishici.sdk.android.factory;
 
 import com.jinrishici.sdk.android.config.Constant;
+import com.jinrishici.sdk.android.interceptor.JinrishiciInterceptor;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -22,12 +23,15 @@ public class RetrofitFactory {
 
 	private OkHttpClient getClient() {
 		if (client == null)
-			client = new OkHttpClient.Builder().build();
+			client = new OkHttpClient.Builder()
+					.addInterceptor(new JinrishiciInterceptor())
+					.build();
 		return client;
 	}
 
-	public void setClient(OkHttpClient client) {
-		this.client = client;
+	public void setClient(OkHttpClient.Builder builder) {
+		this.client = builder.addInterceptor(new JinrishiciInterceptor())
+				.build();
 	}
 
 	private Retrofit retrofit = null;
