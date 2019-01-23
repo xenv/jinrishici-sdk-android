@@ -3,10 +3,10 @@ package com.jinrishici.sdk.android;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.jinrishici.sdk.android.api.JinrishiciAPI;
+import com.jinrishici.sdk.android.config.Constant;
 import com.jinrishici.sdk.android.factory.ExceptionFactory;
 import com.jinrishici.sdk.android.factory.RetrofitFactory;
 import com.jinrishici.sdk.android.listener.JinrishiciCallback;
@@ -20,15 +20,15 @@ import java.io.IOException;
 import okhttp3.OkHttpClient;
 import retrofit2.Response;
 
-public class JinrishiciClient {
-	private static final String TAG = "Jinrishici";
+public final class JinrishiciClient {
+	private static final String TAG = "jinrishici";
 
-	@Nullable
+	@NonNull
 	public PoetySentence getOneSentence() throws JinrishiciRuntimeException {
 		return getOneSentence(null);
 	}
 
-	@Nullable
+	@NonNull
 	public PoetySentence getOneSentence(OkHttpClient.Builder builder) throws JinrishiciRuntimeException {
 		try {
 			if (builder != null)
@@ -128,7 +128,7 @@ public class JinrishiciClient {
 		try {
 			Response<PoetySentence> response = RetrofitFactory.getInstance().getRetrofit()
 					.create(JinrishiciAPI.class)
-					.getSentence()
+					.getSentence(Constant.CLIENT)
 					.execute();
 			if (response.isSuccessful()) {
 				PoetySentence body = response.body();

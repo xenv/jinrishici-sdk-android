@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import com.jinrishici.sdk.android.config.Constant;
 import com.jinrishici.sdk.android.factory.ExceptionFactory;
 
-public class TokenUtil {
+public final class TokenUtil {
 	private SharedPreferences sharedPreferences;
 
 	private TokenUtil() {
@@ -20,6 +20,10 @@ public class TokenUtil {
 
 	public void initSharedPreference(Context context) {
 		sharedPreferences = context.getSharedPreferences(Constant.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
+	}
+
+	public boolean isInit() {
+		return sharedPreferences != null;
 	}
 
 	public static TokenUtil getInstance() {

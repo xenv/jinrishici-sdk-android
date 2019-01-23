@@ -5,7 +5,7 @@ import com.jinrishici.sdk.android.utils.annotation.DeclareMessage;
 
 import java.lang.reflect.Field;
 
-public class ExceptionFactory {
+public final class ExceptionFactory {
 	private static final Code instance = new Code();
 	private static final Class clazz = Code.class;
 
