@@ -22,6 +22,7 @@ import retrofit2.Response;
 
 public final class JinrishiciClient {
 	private static final String TAG = "jinrishici";
+	private static final Object lock = new Object();
 
 	@NonNull
 	public PoetySentence getOneSentence() throws JinrishiciRuntimeException {
@@ -33,10 +34,7 @@ public final class JinrishiciClient {
 		try {
 			if (builder != null)
 				RetrofitFactory.getInstance().setClient(builder);
-			if (TokenUtil.getInstance().getToken() == null)
-				generateToken();
-			if (TokenUtil.getInstance().getToken() == null)
-				throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_TOKEN_EMPTY);
+			getToken();
 			return getSentence();
 		} catch (Exception e) {
 			if (e instanceof JinrishiciRuntimeException)
@@ -45,6 +43,20 @@ public final class JinrishiciClient {
 				Log.w(TAG, "getOneSentence: ", e);
 				throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR);
 			}
+		}
+	}
+
+	private void getToken() {
+		if (TokenUtil.getInstance().getToken() != null)
+			return;
+		synchronized (lock) {
+			String savedToken = TokenUtil.getInstance().getToken();
+			if (savedToken != null)
+				return;
+			generateToken();
+			String token = TokenUtil.getInstance().getToken();
+			if (token == null)
+				throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_REQUEST_TOKEN_EMPTY);
 		}
 	}
 
