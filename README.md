@@ -2,7 +2,7 @@
 
 README: [English](https://github.com/xenv/jinrishici-sdk-android/blob/master/README_EN.md "English") | [中文](https://github.com/xenv/jinrishici-sdk-android/blob/master/README.md "中文")
 
-![](https://img.shields.io/github/last-commit/xenv/jinrishici-sdk-android.svg) ![](https://img.shields.io/github/release-date/xenv/jinrishici-sdk-android.svg)
+![](https://img.shields.io/github/last-commit/xenv/jinrishici-sdk-android.svg) ![](https://img.shields.io/github/release-date/xenv/jinrishici-sdk-android.svg) ![](https://img.shields.io/github/license/xenv/jinrishici-sdk-android.svg) ![](https://img.shields.io/github/stars/xenv/jinrishici-sdk-android.svg?label=Stars&style=social) ![](https://img.shields.io/github/forks/xenv/jinrishici-sdk-android.svg?label=Fork&style=social)
 
 ## 安装
 ![](https://img.shields.io/github/release/xenv/jinrishici-sdk-android.svg)
@@ -72,24 +72,4 @@ PoetySentence poetySentence = new JinrishiciClient().getOneSentence();
 |jrsc_show_error|boolean|当请求出现错误时，是否直接将错误信息显示到TextView上|
 |jrsc_show_loading_text|boolean|是否在加载数据时显示加载文本|
 |jrsc_text_loading|string|加载数据时显示的文本|
-|jrsc_text_error|string|加载失败时显示的文本，当jrsc_show_error为false时有效|
-
-#### 自定义显示数据格式
-```java
-JinrishiciTextView jinrishiciTextView = findViewById(R.id.jinrisiciTextView);
-jinrishiciTextView.setDataFormat(new JinrishiciTextView.DataFormatListener() {
-	@Override
-	public String set(PoetySentence poetySentence) {
-		//TODO return String by yourself
-		return "ip:" + poetySentence.getIpAddress() + "content:" + poetySentence.getData().getContent();
-	}
-});
-```
-**设置新的格式后会自动刷新当前显示的格式，数据不会改变**
-
-## 参考代码
-[Sample](https://github.com/xenv/jinrishici-sdk-android/blob/master/app/src/main/java/com/jinrishici/sdk/android/demo/MainActivity.java "Sample")
-
-## License
-
-	BSD 3-Clause "New" or "Revised" License
+|jrsc_text_error|string|加载失败时显示的文本，当
