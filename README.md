@@ -9,13 +9,13 @@ README: [English](https://github.com/xenv/jinrishici-sdk-android/blob/master/REA
 
 通过Gradle集成：
 
-	implementation 'com.jinrishici:android-sdk:1.0'
+	implementation 'com.jinrishici:android-sdk:{release-version}'
 通过Maven集成：
 
 	<dependency>
   		<groupId>com.jinrishici</groupId>
   		<artifactId>android-sdk</artifactId>
-  		<version>1.0</version>
+  		<version>{release-version}</version>
   		<type>pom</type>
 	</dependency>
 
