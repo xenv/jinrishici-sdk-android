@@ -1,0 +1,44 @@
+apply plugin: 'com.novoda.bintray-release'
+
+import org.apache.tools.ant.taskdefs.condition.Os
+
+// bintray
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def user = properties.getProperty("bintray.user")
+def key = properties.getProperty("bintray.apikey")
+
+publish {
+    repoName = POM_REPO_NAME                // 代码仓库名称。 默认设置为“maven”
+    userOrg = POM_USER_ORG                  // 上传的组织名称
+    groupId = POM_GROUP_ID
+    artifactId = POM_ARTIFACT_ID            // 与groupId组合
+    publishVersion = POM_VERSION            // 仓库版本号
+    uploadName = POM_UPLOAD_NAME            // bintray中包的显示名称
+    desc = POM_DESC                         // 仓库说明
+    website = POM_WEBSITE                   // 仓库地址
+
+    bintrayUser = user                      // bintray账号名
+    bintrayKey = key                        // bintray账号api key
+}
+
+task fuck(group: 'publishing') {
+    doFirst {
+        if (null == user || null == key) {
+            throw new Exception('missing bintray.users or bintray.apikey in local.properties')
+        }
+    }
+    doLast {
+        exec {
+            commandLine "../${getGradlewName()}", 'clean', 'build', 'bintrayUpload', '-PdryRun=false'
+        }
+    }
+}
+
+static def getGradlewName() {
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        return "gradlew.bat"
+    } else {
+        return "gradlew"
+    }
+}
