@@ -9,10 +9,15 @@ README: [English](https://github.com/xenv/jinrishici-sdk-android/blob/master/REA
 
 通过Gradle集成：
 
-	TODO
+	implementation 'com.jinrishici:android-sdk:1.0'
 通过Maven集成：
 
-	TODO
+	<dependency>
+  		<groupId>com.jinrishici</groupId>
+  		<artifactId>android-sdk</artifactId>
+  		<version>1.0</version>
+  		<type>pom</type>
+	</dependency>
 
 ## 如何使用
 
@@ -86,4 +91,5 @@ jinrishiciTextView.setDataFormat(new JinrishiciTextView.DataFormatListener() {
 [Sample](https://github.com/xenv/jinrishici-sdk-android/blob/master/app/src/main/java/com/jinrishici/sdk/android/demo/MainActivity.java "Sample")
 
 ## License
-开源协议
+
+	BSD 3-Clause "New" or "Revised" License
