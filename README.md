@@ -72,4 +72,59 @@ PoetySentence poetySentence = new JinrishiciClient().getOneSentence();
 |jrsc_show_error|boolean|当请求出现错误时，是否直接将错误信息显示到TextView上|
 |jrsc_show_loading_text|boolean|是否在加载数据时显示加载文本|
 |jrsc_text_loading|string|加载数据时显示的文本|
-|jrsc_text_error|string|加载失败时显示的文本，当
+|jrsc_text_error|string|加载失败时显示的文本，当jrsc_show_error为false时有效|
+                                    
+#### 自定义显示数据格式
+```java
+JinrishiciTextView jinrishiciTextView = findViewById(R.id.jinrisiciTextView);
+jinrishiciTextView.setDataFormat(new JinrishiciTextView.DataFormatListener() {
+	@Override
+	public String set(PoetySentence poetySentence) {
+		//TODO return String by yourself
+		return "ip:" + poetySentence.getIpAddress() + "content:" + poetySentence.getData().getContent();
+	}
+});
+```
+**设置新的格式后会自动刷新当前显示的格式，数据不会改变**
+                                    
+## 参考代码
+[Sample](https://github.com/xenv/jinrishici-sdk-android/blob/master/app/src/main/java/com/jinrishici/sdk/android/demo/MainActivity.java "Sample")
+
+
+## 混淆配置
+```
+-keep class com.jinrishici.sdk.android.model.** { *; }
+
+# Retrofit does reflection on generic parameters. InnerClasses is required to use Signature and
+# EnclosingMethod is required to use InnerClasses.
+-keepattributes Signature, InnerClasses, EnclosingMethod
+
+# Retrofit does reflection on method and parameter annotations.
+-keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
+
+# Retain service method parameters when optimizing.
+-keepclassmembers,allowshrinking,allowobfuscation interface * {
+    @retrofit2.http.* <methods>;
+}
+
+# Ignore annotation used for build tooling.
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+
+# Ignore JSR 305 annotations for embedding nullability information.
+-dontwarn javax.annotation.**
+
+# Guarded by a NoClassDefFoundError try/catch and only used when on the classpath.
+-dontwarn kotlin.Unit
+
+# Top-level functions that can only be used by Kotlin.
+-dontwarn retrofit2.KotlinExtensions
+
+# With R8 full mode, it sees no subtypes of Retrofit interfaces since they are created with a Proxy
+# and replaces all potential values with null. Explicitly keeping the interfaces prevents this.
+-if interface * { @retrofit2.http.* <methods>; }
+-keep,allowobfuscation interface <1>
+```
+
+## License
+                                    
+BSD 3-Clause "New" or "Revised" License
