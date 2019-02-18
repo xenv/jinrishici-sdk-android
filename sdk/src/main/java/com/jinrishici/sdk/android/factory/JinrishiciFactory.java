@@ -1,7 +1,7 @@
 package com.jinrishici.sdk.android.factory;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.jinrishici.sdk.android.utils.TokenUtil;
 

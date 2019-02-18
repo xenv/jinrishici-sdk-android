@@ -2,7 +2,7 @@ package com.jinrishici.sdk.android;
 
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.jinrishici.sdk.android.api.JinrishiciAPI;

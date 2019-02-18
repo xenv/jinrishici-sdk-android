@@ -2,8 +2,8 @@ package com.jinrishici.sdk.android.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.jinrishici.sdk.android.config.Constant;
 import com.jinrishici.sdk.android.factory.ExceptionFactory;
