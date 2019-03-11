@@ -1,13 +1,17 @@
 package com.jinrishici.sdk.android;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+
 import androidx.annotation.NonNull;
+
 import android.util.Log;
 
 import com.jinrishici.sdk.android.api.JinrishiciAPI;
 import com.jinrishici.sdk.android.config.Constant;
 import com.jinrishici.sdk.android.factory.ExceptionFactory;
+import com.jinrishici.sdk.android.factory.JinrishiciFactory;
 import com.jinrishici.sdk.android.factory.RetrofitFactory;
 import com.jinrishici.sdk.android.listener.JinrishiciCallback;
 import com.jinrishici.sdk.android.model.JinrishiciRuntimeException;
@@ -23,6 +27,23 @@ import retrofit2.Response;
 public final class JinrishiciClient {
 	private static final String TAG = "jinrishici";
 	private static final Object lock = new Object();
+
+	private JinrishiciClient() {
+	}
+
+	private static final class Singleton {
+		private static final JinrishiciClient INSTANCE = new JinrishiciClient();
+	}
+
+	public static JinrishiciClient getInstance() {
+		return Singleton.INSTANCE;
+	}
+
+	public JinrishiciClient init(@NonNull Context context) {
+		if (!JinrishiciFactory.isInit())
+			JinrishiciFactory.init(context);
+		return this;
+	}
 
 	@NonNull
 	public PoetySentence getOneSentence() throws JinrishiciRuntimeException {

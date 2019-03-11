@@ -1,6 +1,7 @@
 package com.jinrishici.sdk.android.demo;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -27,23 +28,23 @@ public class MainActivity extends AppCompatActivity {
 						.getContent();
 			}
 		});
-		JinrishiciClient client = new JinrishiciClient();
-		client.getOneSentenceBackground(new JinrishiciCallback() {
-			@Override
-			public void done(PoetySentence poetySentence) {
-				//TODO do something
-				Log.i(TAG, "done: " + poetySentence.getData().getContent());
-				((TextView) (findViewById(R.id.textView))).setText(poetySentence.getData()
-						.getContent());
-			}
-
-			@Override
-			public void error(JinrishiciRuntimeException e) {
-				Log.w(TAG, "error: code = " + e.getCode() + " message = " + e.getMessage());
-				//TODO do something else
-				((TextView) (findViewById(R.id.textView))).setText(e.getMessage());
-			}
-		});
+//		JinrishiciClient client = JinrishiciClient.getInstance().init(this);
+//		client.getOneSentenceBackground(new JinrishiciCallback() {
+//			@Override
+//			public void done(PoetySentence poetySentence) {
+//				//TODO do something
+//				Log.i(TAG, "done: " + poetySentence.getData().getContent());
+//				((TextView) (findViewById(R.id.textView))).setText(poetySentence.getData()
+//						.getContent());
+//			}
+//
+//			@Override
+//			public void error(JinrishiciRuntimeException e) {
+//				Log.w(TAG, "error: code = " + e.getCode() + " message = " + e.getMessage());
+//				//TODO do something else
+//				((TextView) (findViewById(R.id.textView))).setText(e.getMessage());
+//			}
+//		});
 
 //		PoetySentence poetySentence = new JinrishiciClient().getOneSentence();
 	}

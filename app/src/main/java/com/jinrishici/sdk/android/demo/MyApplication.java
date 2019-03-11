@@ -8,6 +8,6 @@ public class MyApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		JinrishiciFactory.init(this);
+//		JinrishiciFactory.init(this);
 	}
 }
