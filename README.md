@@ -23,9 +23,11 @@ README: [English](https://github.com/xenv/jinrishici-sdk-android/blob/master/REA
 
 ### 初始化
 
-在你的项目的 `Application` 的 `onCreate` 中加入以下代码：
+在调用获取今日诗词的接口之前任何地方调用初始化方法：
 ```java
+//以下两种初始化方式任选一种即可
 JinrishiciFactory.init(this);
+JinrishiciClient.getInstance().init(this);
 ```
 **这一步为了初始化 `SharedPreference` 的存储，让今日诗词的 `token` 能够存储到设备上，避免重复请求 `token` 给服务端带来不必要的开销。**
 
@@ -33,7 +35,7 @@ JinrishiciFactory.init(this);
 在任何你想要的地方调用函数进行请求：
 ```java
 //异步方法
-JinrishiciClient client = new JinrishiciClient();
+JinrishiciClient client = JinrishiciClient.getInstance();
 client.getOneSentenceBackground(new JinrishiciCallback() {
 	@Override
 	public void done(PoetySentence poetySentence) {
@@ -54,6 +56,7 @@ PoetySentence poetySentence = new JinrishiciClient().getOneSentence();
 
 ### 自定义控件
 同样，sdk也提供自定义控件，你只需要将控件添加进布局中，无需处理相关逻辑，控件会自动请求数据并展示到控件上
+**如果使用自定义控件的方式，那么不用手动调用初始化的方法，控件会自动调用**
 ```xml
 <com.jinrishici.sdk.android.view.JinrishiciTextView
 	android:id="@+id/jinrisiciTextView"
@@ -86,12 +89,14 @@ jinrishiciTextView.setDataFormat(new JinrishiciTextView.DataFormatListener() {
 });
 ```
 **设置新的格式后会自动刷新当前显示的格式，数据不会改变**
-                                    
+
 ## 参考代码
 [Sample](https://github.com/xenv/jinrishici-sdk-android/blob/master/app/src/main/java/com/jinrishici/sdk/android/demo/MainActivity.java "Sample")
 
 
 ## 混淆配置
+**1.3版本之后已经在sdk中自动添加了混淆代码，不用再手动添加混淆配置**
+
 ```
 -keep class com.jinrishici.sdk.android.model.** { *; }
 
