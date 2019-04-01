@@ -51,7 +51,7 @@ client.getOneSentenceBackground(new JinrishiciCallback() {
 });
 
 //同步方法，当请求出现错误时会抛出 JinrishiciRuntimeException ，请自行捕获进行处理
-PoetySentence poetySentence = new JinrishiciClient().getOneSentence();
+PoetySentence poetySentence = JinrishiciClient.getInstance().getOneSentence();
 ```
 
 ### 自定义控件
