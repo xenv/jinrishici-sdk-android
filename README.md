@@ -26,8 +26,8 @@ README: [English](https://github.com/xenv/jinrishici-sdk-android/blob/master/REA
 在调用获取今日诗词的接口之前任何地方调用初始化方法：
 ```java
 //以下两种初始化方式任选一种即可
-JinrishiciFactory.init(this);
-JinrishiciClient.getInstance().init(this);
+JinrishiciFactory.init(getContext());
+JinrishiciClient.getInstance().init(getContext());
 ```
 **这一步为了初始化 `SharedPreference` 的存储，让今日诗词的 `token` 能够存储到设备上，避免重复请求 `token` 给服务端带来不必要的开销。**
 
