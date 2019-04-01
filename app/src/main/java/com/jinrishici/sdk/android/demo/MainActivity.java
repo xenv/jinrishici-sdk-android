@@ -20,14 +20,14 @@ public class MainActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		JinrishiciTextView jinrishiciTextView = findViewById(R.id.jinrisiciTextView);
-		jinrishiciTextView.setDataFormat(new JinrishiciTextView.DataFormatListener() {
-			@Override
-			public String set(PoetySentence poetySentence) {
-				return "ip:" + poetySentence.getIpAddress() + "content:" + poetySentence.getData()
-						.getContent();
-			}
-		});
+//		JinrishiciTextView jinrishiciTextView = findViewById(R.id.jinrisiciTextView);
+//		jinrishiciTextView.setDataFormat(new JinrishiciTextView.DataFormatListener() {
+//			@Override
+//			public String set(PoetySentence poetySentence) {
+//				return "ip:" + poetySentence.getIpAddress() + "content:" + poetySentence.getData()
+//						.getContent();
+//			}
+//		});
 //		JinrishiciClient client = JinrishiciClient.getInstance().init(this);
 //		client.getOneSentenceBackground(new JinrishiciCallback() {
 //			@Override
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 //			}
 //		});
 
-//		PoetySentence poetySentence = new JinrishiciClient().getOneSentence();
+		PoetySentence poetySentence = JinrishiciClient.getInstance().getOneSentence();
+		Log.i(TAG, "onCreate: "+poetySentence.getData().getContent());
 	}
 }

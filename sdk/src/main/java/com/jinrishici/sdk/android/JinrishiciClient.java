@@ -6,8 +6,6 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
-import android.util.Log;
-
 import com.jinrishici.sdk.android.api.JinrishiciAPI;
 import com.jinrishici.sdk.android.config.Constant;
 import com.jinrishici.sdk.android.factory.ExceptionFactory;
@@ -25,7 +23,6 @@ import okhttp3.OkHttpClient;
 import retrofit2.Response;
 
 public final class JinrishiciClient {
-	private static final String TAG = "jinrishici";
 	private static final Object lock = new Object();
 
 	private JinrishiciClient() {
@@ -52,19 +49,10 @@ public final class JinrishiciClient {
 
 	@NonNull
 	public PoetySentence getOneSentence(OkHttpClient.Builder builder) throws JinrishiciRuntimeException {
-		try {
-			if (builder != null)
-				RetrofitFactory.getInstance().setClient(builder);
-			getToken();
-			return getSentence();
-		} catch (Exception e) {
-			if (e instanceof JinrishiciRuntimeException)
-				throw e;
-			else {
-				Log.w(TAG, "getOneSentence: ", e);
-				throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR);
-			}
-		}
+		if (builder != null)
+			RetrofitFactory.getInstance().setClient(builder);
+		getToken();
+		return getSentence();
 	}
 
 	private void getToken() {
@@ -112,29 +100,24 @@ public final class JinrishiciClient {
 	}
 
 	public void getOneSentenceBackground(final OkHttpClient.Builder builder, JinrishiciCallback listener) {
-		try {
-			handler = new JinrishiciHandler(listener);
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						PoetySentence sentence = getOneSentence(builder);
-						Message message = Message.obtain();
-						message.obj = sentence;
-						message.what = ExceptionFactory.Code.DONE;
-						handler.sendMessage(message);
-					} catch (Exception e) {
-						Message message = Message.obtain();
-						message.obj = e;
-						message.what = ExceptionFactory.Code.ERROR;
-						handler.sendMessage(message);
-					}
+		handler = new JinrishiciHandler(listener);
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					PoetySentence sentence = getOneSentence(builder);
+					Message message = Message.obtain();
+					message.obj = sentence;
+					message.what = ExceptionFactory.Code.DONE;
+					handler.sendMessage(message);
+				} catch (Exception e) {
+					Message message = Message.obtain();
+					message.obj = e;
+					message.what = ExceptionFactory.Code.ERROR;
+					handler.sendMessage(message);
 				}
-			}).start();
-		} catch (Exception e) {
-			Log.w(TAG, "getOneSentence: ", e);
-			listener.error(ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR));
-		}
+			}
+		}).start();
 	}
 
 	private void generateToken() {
