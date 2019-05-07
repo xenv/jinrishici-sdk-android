@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 //			}
 //		});
 
-		PoetySentence poetySentence = JinrishiciClient.getInstance().getOneSentence();
-		Log.i(TAG, "onCreate: "+poetySentence.getData().getContent());
+//		PoetySentence poetySentence = JinrishiciClient.getInstance().getOneSentence();
+//		Log.i(TAG, "onCreate: "+poetySentence.getData().getContent());
 	}
 }

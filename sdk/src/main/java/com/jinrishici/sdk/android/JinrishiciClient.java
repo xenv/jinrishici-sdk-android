@@ -6,24 +6,26 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
-import com.jinrishici.sdk.android.api.JinrishiciAPI;
-import com.jinrishici.sdk.android.config.Constant;
+import com.google.gson.Gson;
 import com.jinrishici.sdk.android.factory.ExceptionFactory;
 import com.jinrishici.sdk.android.factory.JinrishiciFactory;
-import com.jinrishici.sdk.android.factory.RetrofitFactory;
 import com.jinrishici.sdk.android.listener.JinrishiciCallback;
 import com.jinrishici.sdk.android.model.JinrishiciRuntimeException;
 import com.jinrishici.sdk.android.model.PoetySentence;
 import com.jinrishici.sdk.android.model.PoetyToken;
 import com.jinrishici.sdk.android.utils.TokenUtil;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 
-import okhttp3.OkHttpClient;
-import retrofit2.Response;
+import javax.net.ssl.HttpsURLConnection;
 
 public final class JinrishiciClient {
 	private static final Object lock = new Object();
+	private static final Gson gson = new Gson();
 
 	private JinrishiciClient() {
 	}
@@ -44,13 +46,6 @@ public final class JinrishiciClient {
 
 	@NonNull
 	public PoetySentence getOneSentence() throws JinrishiciRuntimeException {
-		return getOneSentence(null);
-	}
-
-	@NonNull
-	public PoetySentence getOneSentence(OkHttpClient.Builder builder) throws JinrishiciRuntimeException {
-		if (builder != null)
-			RetrofitFactory.getInstance().setClient(builder);
 		getToken();
 		return getSentence();
 	}
@@ -80,10 +75,10 @@ public final class JinrishiciClient {
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {
-				case ExceptionFactory.Code.DONE:
+				case 0:
 					listener.done((PoetySentence) msg.obj);
 					break;
-				case ExceptionFactory.Code.ERROR:
+				case 1:
 					if (msg.obj instanceof JinrishiciRuntimeException)
 						listener.error((JinrishiciRuntimeException) msg.obj);
 					else
@@ -96,24 +91,20 @@ public final class JinrishiciClient {
 	private JinrishiciHandler handler;
 
 	public void getOneSentenceBackground(JinrishiciCallback listener) {
-		getOneSentenceBackground(null, listener);
-	}
-
-	public void getOneSentenceBackground(final OkHttpClient.Builder builder, JinrishiciCallback listener) {
 		handler = new JinrishiciHandler(listener);
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					PoetySentence sentence = getOneSentence(builder);
+					PoetySentence sentence = getOneSentence();
 					Message message = Message.obtain();
 					message.obj = sentence;
-					message.what = ExceptionFactory.Code.DONE;
+					message.what = ExceptionFactory.Code.DONE.code;
 					handler.sendMessage(message);
 				} catch (Exception e) {
 					Message message = Message.obtain();
 					message.obj = e;
-					message.what = ExceptionFactory.Code.ERROR;
+					message.what = ExceptionFactory.Code.ERROR.code;
 					handler.sendMessage(message);
 				}
 			}
@@ -122,18 +113,28 @@ public final class JinrishiciClient {
 
 	private void generateToken() {
 		try {
-			Response<PoetyToken> response = RetrofitFactory.getInstance().getRetrofit()
-					.create(JinrishiciAPI.class)
-					.getToken()
-					.execute();
-			if (response.isSuccessful()) {
-				PoetyToken body = response.body();
-				if (body != null && !body.getToken().equals(""))
-					TokenUtil.getInstance().setToken(body.getToken());
-				else
+			URL url = new URL("https://v2.jinrishici.com/token");
+			HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.setReadTimeout(5000);
+			connection.setConnectTimeout(10000);
+			connection.connect();
+			InputStream inputStream = connection.getInputStream();
+			connection.disconnect();
+			int responseCode = connection.getResponseCode();
+			if (responseCode == 200) {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+				StringBuilder response = new StringBuilder();
+				String line;
+				while ((line = reader.readLine()) != null)
+					response.append(line);
+				PoetyToken poetyToken = gson.fromJson(response.toString(), PoetyToken.class);
+				if (poetyToken == null || poetyToken.getToken().isEmpty())
 					throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_REQUEST_TOKEN_EMPTY);
-			} else
+				TokenUtil.getInstance().setToken(poetyToken.getToken());
+			} else {
 				throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_REQUEST_TOKEN);
+			}
 		} catch (IOException e) {
 			throw new JinrishiciRuntimeException(e);
 		}
@@ -142,18 +143,28 @@ public final class JinrishiciClient {
 	@NonNull
 	private PoetySentence getSentence() {
 		try {
-			Response<PoetySentence> response = RetrofitFactory.getInstance().getRetrofit()
-					.create(JinrishiciAPI.class)
-					.getSentence(Constant.CLIENT)
-					.execute();
-			if (response.isSuccessful()) {
-				PoetySentence body = response.body();
-				if (body != null)
-					return body;
-				else
+			URL url = new URL("https://v2.jinrishici.com/one.json?client=android-sdk" + BuildConfig.VERSION_NAME);
+			HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.setReadTimeout(5000);
+			connection.setConnectTimeout(10000);
+			connection.connect();
+			InputStream inputStream = connection.getInputStream();
+			connection.disconnect();
+			int responseCode = connection.getResponseCode();
+			if (responseCode == 200) {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+				StringBuilder response = new StringBuilder();
+				String line;
+				while ((line = reader.readLine()) != null)
+					response.append(line);
+				PoetySentence poetySentence = gson.fromJson(response.toString(), PoetySentence.class);
+				if (poetySentence == null || poetySentence.getToken().isEmpty())
 					throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_REQUEST_JRSC_EMPTY);
-			} else
+				return poetySentence;
+			} else {
 				throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_REQUEST_JRSC);
+			}
 		} catch (IOException e) {
 			throw new JinrishiciRuntimeException(e);
 		}
