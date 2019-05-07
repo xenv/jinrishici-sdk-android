@@ -96,21 +96,19 @@ jinrishiciTextView.setDataFormat(new JinrishiciTextView.DataFormatListener() {
 
 ## 混淆配置
 **1.3版本之后已经在sdk中自动添加了混淆代码，不用再手动添加混淆配置**
+**如果存在问题请手动添加以下配置**
 
 ```
--keep class com.jinrishici.sdk.android.model.** { *; }
-
+# Gson uses generic type information stored in a class file when working with fields. Proguard
+# removes such information by default, so configure it to keep all of it.
+-keepattributes Signature
+# For using GSON @Expose annotation
+-keepattributes *Annotation*
 # Gson specific classes
-
--keepclass sun.misc.Unsafe {*;}
-
--keepclass com.google.gson.stream.** {*;}
-
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.stream.** { *; }
 # Application classes that will be serialized/deserialized over Gson
-
--keepclass com.google.gson.examples.android.model.** {*;}
-
--keepclass com.google.gson.** {*;}
+-keep class com.jinrishici.sdk.android.model.** { *; }
 ```
 
 ## License
