@@ -37,7 +37,7 @@
 -keepattributes *Annotation*
 
 # 忽略警告
--ignorewarning
+-ignorewarnings
 
 #记录生成的日志数据,gradle build时在本项目根目录输出
 
@@ -50,15 +50,13 @@
 # 混淆前后的映射
 -printmapping mapping.txt
 
--keep class com.jinrishici.sdk.android.model.** { *; }
+# Gson uses generic type information stored in a class file when working with fields. Proguard
+# removes such information by default, so configure it to keep all of it.
+-keepattributes Signature
+# For using GSON @Expose annotation
+-keepattributes *Annotation*
 # Gson specific classes
-
--keepclass sun.misc.Unsafe {*;}
-
--keepclass com.google.gson.stream.** {*;}
-
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.stream.** { *; }
 # Application classes that will be serialized/deserialized over Gson
-
--keepclass com.google.gson.examples.android.model.** {*;}
-
--keepclass com.google.gson.** {*;}
+-keep class com.jinrishici.sdk.android.model.** { *; }
