@@ -3,6 +3,7 @@ package com.jinrishici.sdk.android;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
@@ -129,7 +130,7 @@ public final class JinrishiciClient {
 				while ((line = reader.readLine()) != null)
 					response.append(line);
 				PoetyToken poetyToken = gson.fromJson(response.toString(), PoetyToken.class);
-				if (poetyToken == null || poetyToken.getToken().isEmpty())
+				if (poetyToken == null || TextUtils.isEmpty(poetyToken.getToken()))
 					throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_REQUEST_TOKEN_EMPTY);
 				TokenUtil.getInstance().setToken(poetyToken.getToken());
 			} else {
@@ -143,9 +144,10 @@ public final class JinrishiciClient {
 	@NonNull
 	private PoetySentence getSentence() {
 		try {
-			URL url = new URL("https://v2.jinrishici.com/one.json?client=android-sdk" + BuildConfig.VERSION_NAME);
+			URL url = new URL("https://v2.jinrishici.com/one.json?client=android-sdk/" + BuildConfig.VERSION_NAME);
 			HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
+			connection.setRequestProperty("X-User-Token",  TokenUtil.getInstance().getToken());
 			connection.setReadTimeout(5000);
 			connection.setConnectTimeout(10000);
 			connection.connect();
@@ -159,7 +161,7 @@ public final class JinrishiciClient {
 				while ((line = reader.readLine()) != null)
 					response.append(line);
 				PoetySentence poetySentence = gson.fromJson(response.toString(), PoetySentence.class);
-				if (poetySentence == null || poetySentence.getToken().isEmpty())
+				if (poetySentence == null)
 					throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_REQUEST_JRSC_EMPTY);
 				return poetySentence;
 			} else {
