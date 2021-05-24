@@ -113,15 +113,16 @@ public final class JinrishiciClient {
 	}
 
 	private void generateToken() {
+	    HttpsURLConnection connection = null;
+	    InputStream inputStream = null;
 		try {
 			URL url = new URL("https://v2.jinrishici.com/token");
-			HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+			connection = (HttpsURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setReadTimeout(5000);
 			connection.setConnectTimeout(10000);
 			connection.connect();
-			InputStream inputStream = connection.getInputStream();
-			connection.disconnect();
+			inputStream = connection.getInputStream();
 			int responseCode = connection.getResponseCode();
 			if (responseCode == 200) {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -138,21 +139,33 @@ public final class JinrishiciClient {
 			}
 		} catch (IOException e) {
 			throw new JinrishiciRuntimeException(e);
-		}
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+
+				}
+			}
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
 	}
 
 	@NonNull
 	private PoetySentence getSentence() {
+	    HttpsURLConnection connection = null;
+	    InputStream inputStream = null;
 		try {
 			URL url = new URL("https://v2.jinrishici.com/one.json?client=android-sdk/" + BuildConfig.VERSION_NAME);
-			HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-			connection.setRequestMethod("GET");
+            connection = (HttpsURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
 			connection.setRequestProperty("X-User-Token",  TokenUtil.getInstance().getToken());
 			connection.setReadTimeout(5000);
 			connection.setConnectTimeout(10000);
 			connection.connect();
-			InputStream inputStream = connection.getInputStream();
-			connection.disconnect();
+			inputStream = connection.getInputStream();
 			int responseCode = connection.getResponseCode();
 			if (responseCode == 200) {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -169,6 +182,17 @@ public final class JinrishiciClient {
 			}
 		} catch (IOException e) {
 			throw new JinrishiciRuntimeException(e);
+		} finally {
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+
+				}
+			}
+            if (connection != null) {
+			    connection.disconnect();
+            }
 		}
 	}
 }
