@@ -15,9 +15,6 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.8.6'
 }
 
-// 发布到本地目录，非必须
-ext.localReleaseDest = "${buildDir}/release/${VERSION_NAME}"
-
 task androidJavadocs(type: Javadoc) {
 	source = android.sourceSets.main.java.srcDirs
 	classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
@@ -35,5 +32,6 @@ task androidSourcesJar(type: Jar) {
 
 artifacts {
 	archives androidSourcesJar
-	archives androidJavadocsJar
+//	archives androidJavadocsJar
 }
+apply from: '../mvn_publish.gradle'

@@ -3,7 +3,6 @@ package com.jinrishici.sdk.android.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -15,7 +14,6 @@ import com.jinrishici.sdk.android.model.JinrishiciRuntimeException;
 import com.jinrishici.sdk.android.model.PoetySentence;
 
 public class JinrishiciTextView extends AppCompatTextView {
-	private static final String TAG = "JinrishiciTextView";
     private final JinrishiciClient client = JinrishiciClient.getInstance();
     private final JinrishiciTextViewConfig config = new JinrishiciTextViewConfig();
     private DataFormatListener dataFormatListener = null;//格式化方法
