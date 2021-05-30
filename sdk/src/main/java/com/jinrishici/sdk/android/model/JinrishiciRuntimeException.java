@@ -1,8 +1,8 @@
 package com.jinrishici.sdk.android.model;
 
 public final class JinrishiciRuntimeException extends RuntimeException {
-	private int code;
-	private String message;
+	private final int code;
+	private final String message;
 
 	public JinrishiciRuntimeException(int code, String message) {
 		this.code = code;

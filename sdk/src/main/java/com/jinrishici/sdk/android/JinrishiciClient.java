@@ -180,6 +180,7 @@ public final class JinrishiciClient {
                 throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_REQUEST_JRSC);
             }
         } catch (IOException e) {
+            Log.w(TAG, "getSentence: ", e);
             throw new JinrishiciRuntimeException(e);
         } finally {
             if (inputStream != null) {
