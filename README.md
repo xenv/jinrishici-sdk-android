@@ -73,7 +73,7 @@ client.setRequestClient(new RequestClient() {
             @Override
             public PoetySentence getPoetySentence(String httpMethod, String httpUrl, String httpHeaderName, String httpHeaderValue) {
               	//使用项目中使用的Http框架发起请求，例如OkHttp或者Retrofit
-              	//向给定的httpUrl发送指定httpMethod的请求，添加指定的HttpHeaderName和HttpHeaderValue到请求Header VS，然后将返回结果反序列化成PoetyToken返回即可
+              	//向给定的httpUrl发送指定httpMethod的请求，添加指定的HttpHeaderName和HttpHeaderValue到请求Header中，然后将返回结果反序列化成PoetySentence返回即可
               	//该方法为同步调用，无需在此处以异步方式返回结果
                 return null;
             }
