@@ -13,10 +13,10 @@ README: [English](https://github.com/xenv/jinrishici-sdk-android/blob/master/REA
 通过Maven集成：
 
 	<dependency>
-  		<groupId>com.jinrishici</groupId>
-  		<artifactId>android-sdk</artifactId>
-  		<version>{release-version}</version>
-  		<type>pom</type>
+		<groupId>com.jinrishici</groupId>
+		<artifactId>android-sdk</artifactId>
+		<version>{release-version}</version>
+		<type>pom</type>
 	</dependency>
 
 ## 如何使用
@@ -54,7 +54,36 @@ client.getOneSentenceBackground(new JinrishiciCallback() {
 PoetySentence poetySentence = JinrishiciClient.getInstance().getOneSentence();
 ```
 
+### 使用项目中的HTTP请求框架发起请求（1.5版本以后提供）
+
+如果不喜欢使用 `HttpsURLConnection` 发起请求，或者希望使用项目中统一的HTTP请求框架，可以通过以下方法指定请求的具体实现。
+
+默认使用 `HttpsURLConnection` 实现。
+
+```java
+client.setRequestClient(new RequestClient() {
+            @Override
+            public PoetyToken generateToken(String httpMethod, String httpUrl) {
+              	//使用项目中使用的Http框架发起请求，例如OkHttp或者Retrofit
+              	//向给定的httpUrl发送指定httpMethod的请求，然后将返回结果反序列化成PoetyToken返回即可
+              	//该方法为同步调用，无需在此处以异步方式返回结果
+                return null;
+            }
+
+            @Override
+            public PoetySentence getPoetySentence(String httpMethod, String httpUrl, String httpHeaderName, String httpHeaderValue) {
+              	//使用项目中使用的Http框架发起请求，例如OkHttp或者Retrofit
+              	//向给定的httpUrl发送指定httpMethod的请求，添加指定的HttpHeaderName和HttpHeaderValue到请求Header VS，然后将返回结果反序列化成PoetyToken返回即可
+              	//该方法为同步调用，无需在此处以异步方式返回结果
+                return null;
+            }
+        });
+```
+
+
+
 ### 自定义控件
+
 同样，sdk也提供自定义控件，你只需要将控件添加进布局中，无需处理相关逻辑，控件会自动请求数据并展示到控件上
 **如果使用自定义控件的方式，那么不用手动调用初始化的方法，控件会自动调用**
 ```xml
@@ -76,7 +105,7 @@ PoetySentence poetySentence = JinrishiciClient.getInstance().getOneSentence();
 |jrsc_show_loading_text|boolean|是否在加载数据时显示加载文本|
 |jrsc_text_loading|string|加载数据时显示的文本|
 |jrsc_text_error|string|加载失败时显示的文本，当jrsc_show_error为false时有效|
-                                    
+
 #### 自定义显示数据格式
 ```java
 JinrishiciTextView jinrishiciTextView = findViewById(R.id.jinrisiciTextView);
@@ -112,5 +141,6 @@ jinrishiciTextView.setDataFormat(new JinrishiciTextView.DataFormatListener() {
 ```
 
 ## License
-                                    
+
 BSD 3-Clause "New" or "Revised" License
+
