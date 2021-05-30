@@ -4,11 +4,10 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.google.gson.Gson;
+import com.jinrishici.sdk.android.api.RequestClient;
 import com.jinrishici.sdk.android.factory.ExceptionFactory;
 import com.jinrishici.sdk.android.factory.JinrishiciFactory;
 import com.jinrishici.sdk.android.listener.JinrishiciCallback;
@@ -17,18 +16,9 @@ import com.jinrishici.sdk.android.model.PoetySentence;
 import com.jinrishici.sdk.android.model.PoetyToken;
 import com.jinrishici.sdk.android.utils.TokenUtil;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
-
 public final class JinrishiciClient {
-    private static final String TAG = "JinrishiciClient";
     private static final Object lock = new Object();
-    private static final Gson gson = new Gson();
+    private RequestClient requestClient = new DefaultRequestClient();
 
     private JinrishiciClient() {
     }
@@ -112,87 +102,17 @@ public final class JinrishiciClient {
     }
 
     private void generateToken() {
-        HttpsURLConnection connection = null;
-        InputStream inputStream = null;
-        try {
-            URL url = new URL("https://v2.jinrishici.com/token");
-            connection = (HttpsURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setReadTimeout(5000);
-            connection.setConnectTimeout(10000);
-            connection.connect();
-            inputStream = connection.getInputStream();
-            int responseCode = connection.getResponseCode();
-            if (responseCode == 200) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null)
-                    response.append(line);
-                PoetyToken poetyToken = gson.fromJson(response.toString(), PoetyToken.class);
-                if (poetyToken == null || TextUtils.isEmpty(poetyToken.getToken()))
-                    throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_REQUEST_TOKEN_EMPTY);
-                TokenUtil.getInstance().setToken(poetyToken.getToken());
-            } else {
-                throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_REQUEST_TOKEN);
-            }
-        } catch (IOException e) {
-            throw new JinrishiciRuntimeException(e);
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    Log.w(TAG, "close input stream failed", e);
-                }
-            }
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
+        PoetyToken poetyToken = requestClient.generateToken("GET", "https://v2.jinrishici.com/token");
+        if (poetyToken == null || TextUtils.isEmpty(poetyToken.getToken()))
+            throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_REQUEST_TOKEN_EMPTY);
+        TokenUtil.getInstance().setToken(poetyToken.getToken());
     }
 
     @NonNull
     private PoetySentence getSentence() {
-        HttpsURLConnection connection = null;
-        InputStream inputStream = null;
-        try {
-            URL url = new URL("https://v2.jinrishici.com/one.json?client=android-sdk/" + BuildConfig.LIB_VERSION_NAME);
-            connection = (HttpsURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("X-User-Token", TokenUtil.getInstance().getToken());
-            connection.setReadTimeout(5000);
-            connection.setConnectTimeout(10000);
-            connection.connect();
-            inputStream = connection.getInputStream();
-            int responseCode = connection.getResponseCode();
-            if (responseCode == 200) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null)
-                    response.append(line);
-                PoetySentence poetySentence = gson.fromJson(response.toString(), PoetySentence.class);
-                if (poetySentence == null)
-                    throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_REQUEST_JRSC_EMPTY);
-                return poetySentence;
-            } else {
-                throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_REQUEST_JRSC);
-            }
-        } catch (IOException e) {
-            Log.w(TAG, "getSentence: ", e);
-            throw new JinrishiciRuntimeException(e);
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    Log.w(TAG, "close input stream failed", e);
-                }
-            }
-            if (connection != null) {
-                connection.disconnect();
-            }
-        }
+        PoetySentence poetySentence = requestClient.getPoetySentence("GET", "https://v2.jinrishici.com/one.json?client=android-sdk/" + BuildConfig.LIB_VERSION_NAME, "X-User-Token", TokenUtil.getInstance().getToken());
+        if (poetySentence == null)
+            throw ExceptionFactory.throwByCode(ExceptionFactory.Code.ERROR_REQUEST_JRSC_EMPTY);
+        return poetySentence;
     }
 }
