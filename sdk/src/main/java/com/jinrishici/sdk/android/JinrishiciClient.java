@@ -37,6 +37,11 @@ public final class JinrishiciClient {
         return this;
     }
 
+    public JinrishiciClient setRequestClient(RequestClient requestClient) {
+        this.requestClient = requestClient;
+        return this;
+    }
+
     @NonNull
     public PoetySentence getOneSentence() throws JinrishiciRuntimeException {
         getToken();

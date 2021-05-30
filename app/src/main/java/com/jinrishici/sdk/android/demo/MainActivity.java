@@ -7,9 +7,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.jinrishici.sdk.android.JinrishiciClient;
+import com.jinrishici.sdk.android.api.RequestClient;
 import com.jinrishici.sdk.android.listener.JinrishiciCallback;
 import com.jinrishici.sdk.android.model.JinrishiciRuntimeException;
 import com.jinrishici.sdk.android.model.PoetySentence;
+import com.jinrishici.sdk.android.model.PoetyToken;
 import com.jinrishici.sdk.android.view.JinrishiciTextView;
 
 public class MainActivity extends AppCompatActivity {
